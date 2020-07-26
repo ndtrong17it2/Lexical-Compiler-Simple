@@ -1,0 +1,73 @@
+options {
+NODE_DEFAULT_VOID = true; // don't generate nodes by default
+NODE_PREFIX = "";  // no prefix to node class names
+MULTI = true;   // many class names
+}
+PARSER_BEGIN(Calc4)
+public class Calc4 {
+public static void main (String args []) {
+Calc4 parser = new Calc4(System.in);
+for (;; jjtree.reset())
+try {
+switch (parser.expr()) {
+default: ((SimpleNode)jjtree.rootNode()).dump("\t");
+case 0: break;
+case -1: System.exit(0);
+}
+} catch (Exception e) {
+e.printStackTrace(); System.exit(1);
+}
+}
+}
+PARSER_END(Calc4)
+
+SKIP:    // defines input to be ignored
+{ " " | "\r" | "\t"
+}
+
+TOKEN:    // defines token names
+{ < EOL: "\n" >
+| < CONSTANT: ( <DIGIT> )+ > // re: 1 or more
+| < #DIGIT: ["0" - "9"] > // private re
+}
+int expr():   // expr: sum \n
+{}    // -1 at eof, 0 at eol/error
+{ try {
+( sum() <EOL> { return 1; }
+| <EOL>  { return 0; }
+| <EOF>  { return -1; }
+)
+} catch (ParseException pe) {
+System.err.println(pe);
+for (;;)
+switch (getNextToken().kind) {
+case EOF: return -1;
+case EOL: return 0;
+}
+}
+}
+
+void sum():   // sum: product { +- product }
+{}
+{ product()
+( "+" product() #Add(2) // Add with 2 descendants
+| "-" product() #Sub(2)
+)*
+}
+
+void product():   // product: term { *%/ term }
+{}
+{ term()
+( "*" term() #Mul(2)
+| "%" term() #Rem(2)
+| "/" term() #Div(2)
+)*
+}
+
+void term():   // term: +term | -term | (sum) | number
+{}
+{ "+" term()  // no need to make node
+| "-" term() #Neg(1) // insert negation node
+| "(" sum() ")"
+| ( <CONSTANT> ) #IntLit // create terminal node
+}
