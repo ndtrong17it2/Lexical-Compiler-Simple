@@ -7,19 +7,13 @@ Syntax of custom programming language accepted:
 3. Program Body
 4. Statement
 
-### Declaration
-
-```
-DECLARATION
-Assign variables here
-``` 
-
 ### Assign variables
 
 ```
 <DATA_TYPE> <VARIABLE_NAME> := <VALUE>
 ```
 <DATA_TYPE> may be one of the following: INTEGER, FLOAT, STRING, BOOLEAN
+You can declare a variable everywhere inside the program
 
 ### Program Body
 ```
