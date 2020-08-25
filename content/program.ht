@@ -1,0 +1,25 @@
+DECLARATION
+	BOOLEAN a := TRUE
+	INTEGER b := 10
+	INTEGER c := 15
+PROGRAM
+	IF TRUE THEN
+		b := 20
+	ENDIF //comment
+	
+	SWITCH b			// Begin switch
+		CASE 20: 
+			a := FALSE
+			b := 10
+		ENDCASE
+		CASE 20: a := FALSE
+		ENDCASE
+		CASE 20: a := FALSE
+		ENDCASE
+		DEFAULT: a:= TRUE
+		ENDCASE
+	ENDSWITCH
+	WHILE b < 10 DO 	// Begin while loop
+		b := b + 1
+	ENDWHILE
+ENDPROGRAM
