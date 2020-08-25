@@ -22,3 +22,12 @@ javac Calc4.java
 java Calc4
 ```
 And then type any literal number or operator
+
+- For Custom Programming Language Parser
+Type in commandline
+```
+javacc SimpleProgram.jj
+javac SimpleProgram.java
+java SimpleProgram program.ht
+```
+The program.ht file contains our custom code. Edit program.ht file for 
