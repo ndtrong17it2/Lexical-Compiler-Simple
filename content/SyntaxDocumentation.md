@@ -17,10 +17,9 @@ Assign variables here
 ### Assign variables
 
 ```
-BOOLEAN a:= TRUE
-INTEGER b:= 20
-STRING s:= "text sample"
+<DATA_TYPE> <VARIABLE_NAME> := <VALUE>
 ```
+<DATA_TYPE> may be one of the following: INTEGER, FLOAT, STRING, BOOLEAN
 
 ### Program Body
 ```
@@ -29,10 +28,17 @@ PROGRAM
 ENDPROGRAM
 ```
 
+### Print statement
+
+```
+PRINT <VARIABLE_NAME> | <INTEGER> | <FLOAT> | <STRING>
+```
+
+
 ### Statement
 * If..else condition
 ```
-IF b = 10 THEN
+IF <CONDITIONAL> THEN
 	// Do somethings
 ELSE
 	// Do somethings else
@@ -40,11 +46,11 @@ ENDIF
 ```
 * Switch case
 ```
-SWITCH b
-	CASE 10: 
+SWITCH <VARIABLE_NAME>
+	CASE <FIRST_VALUE>: 
 		// Do somethings in case
 	ENDCASE
-	CASE 50: 
+	CASE <SECOND_VALUE>: 
 		// Do somethings in case
 	ENDCASE
 	DEFAULT:
@@ -54,7 +60,7 @@ ENDSWITCH
 ```
 * While loop
 ```
-WHILE b < 10 DO
+WHILE <CONDITIONAL> DO
 	// Do somethings in loop
 ENDWHILE
 ```

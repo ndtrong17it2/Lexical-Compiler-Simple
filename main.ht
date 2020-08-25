@@ -1,0 +1,15 @@
+DECLARATION
+	BOOLEAN a := TRUE
+	INTEGER b := 10
+	FLOAT c := 5.7
+	STRING d := "Some string"
+PROGRAM
+	PRINT a
+	PRINT b // Before assign
+	IF TRUE THEN
+		b := 20
+	ENDIF
+	PRINT b  // After assign
+	PRINT c // 5.7
+	PRINT "Hello World" // "Hello World"
+ENDPROGRAM

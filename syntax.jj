@@ -1,0 +1,412 @@
+PARSER_BEGIN(SimpleProgram)
+
+import java.io.FileInputStream;
+import java.util.HashMap;
+
+
+public class SimpleProgram{
+    public static void main(String[] args) throws Exception {
+        if (args.length > 0) {
+            SimpleProgram parser = new SimpleProgram(new FileInputStream(args[0]));
+		    parser.CompilationUnit();
+        } else {
+            throw new Exception("No file provided. Syntax: java SimpleProgram <path_to_file>");
+        }
+		
+	}
+}
+
+PARSER_END(SimpleProgram)
+
+TOKEN_MGR_DECLS : {
+    // Save & load variable
+    public static HashMap variables = new HashMap();
+}
+
+/*
+ * TOKENS
+ */
+SPECIAL_TOKEN :
+{
+    < SPACE_CHAR: " " | "\t" | "\f" >
+}
+
+SPECIAL_TOKEN :
+{
+    < SINGLE_LINE_COMMENT: "//" (~["\n", "\r"])* ("\n" | "\r" | "\n\r")? >
+}
+
+
+TOKEN :
+{
+    < EOL: ("\n" | "\r" | "\n\r") ("\n" | "\r" | "\n\r" | " " | "\t" | "\f")* >
+}
+
+TOKEN :
+{
+    < DECLARATION: "DECLARATION" >
+  | < PROGRAM: "PROGRAM" >
+  | < ENDPROGRAM: "ENDPROGRAM" >
+
+  | < BOOLEAN: "BOOLEAN" >
+  | < INTEGER: "INTEGER" >
+  | < STRING: "STRING" >
+  | < FLOAT: "FLOAT" >
+
+  | < IF: "IF" >
+  | < THEN: "THEN" >
+  | < ELSE: "ELSE" >
+  | < ENDIF: "ENDIF" >
+  | < WHILE: "WHILE" >
+  | < DO: "DO" >
+  | < ENDWHILE: "ENDWHILE" >
+  | < SWITCH: "SWITCH" >
+  | < CASE: "CASE" >
+  | < CASE_DEFAULT: "DEFAULT" >
+  | < ENDCASE: "ENDCASE" >
+  | < ENDSWITCH: "ENDSWITCH" >
+  | < FILE: "FILE" >
+  | < OVERWRITE: "OVERWRITE" >
+  | < APPEND: "APPEND" >
+
+  | < AND: "AND" >
+  | < OR: "OR" >
+  | < NOT: "NOT" >
+  | < TRUE: "TRUE" >
+  | < FALSE: "FALSE" >
+
+  | < PRINT: "PRINT" >
+}
+
+TOKEN :
+{
+    < LPAREN: "(" >
+  | < RPAREN: ")" >
+  | < COLON: ":" >
+
+  | < ASSIGN: ":=" >
+
+  | < EQ: "=" >
+  | < NEQ: "<>" >
+  | < LT: "<" >
+  | < GT: ">" >
+  | < LE: "<=" >
+  | < GE: ">=" >
+
+  | < PLUS: "+" >
+  | < MINUS: "-" >
+  | < STAR: "*" >
+  | < SLASH: "/" >
+}
+
+TOKEN :
+{
+    < IDENTIFIER: ( ["a"-"z"] | ["A"-"Z"] ) 
+                  ( ["a"-"z"] | ["A"-"Z"] | ["0"-"9"] | "_" )* >
+}
+
+TOKEN :
+{
+    < INTEGER_LITERAL: ( ( <MINUS> )? ["1"-"9"] (["0"-"9"])* ) | "0" >
+
+  | < STRING_LITERAL:
+      "\""
+      (   ( ~["\"","\\","\n","\r"] )
+        | ( "\\" ["n", "t", "b", "r", "f", "\\", "'", "\""] )
+      )*
+      "\""
+    >
+
+  | < FLOATING_LITERAL: ( ( <PLUS> | <MINUS> )? ["0"-"9"] "." (["0"-"9"])+  ) >
+}
+
+/* 
+ * SYNTAX
+ */
+void CompilationUnit():
+{}
+{
+  Declaration()
+  Program()
+  ( <EOL> )?
+  <EOF>
+}
+/*
+void Declaration():
+{}
+{
+    <DECLARATION> <EOL>
+    ( SimpleDeclaration() )*
+}
+*/
+
+void Declaration():
+{}
+{
+    <DECLARATION> <EOL>
+    ( BooleanDeclaration() | IntegerDeclaration() | StringDeclaration() | FloatDeclaration() )*
+}
+
+
+/*
+ * split into many smaller declaration
+ */
+/*
+void SimpleDeclaration():
+{}
+{
+    (   
+        <BOOLEAN>
+      | <INTEGER>
+      | <STRING>
+      | <FLOAT>
+    ) <IDENTIFIER>
+
+    (
+      <ASSIGN> (   <INTEGER_LITERAL>
+                 | <STRING_LITERAL>
+                 | <FLOATING_LITERAL>
+                 | <TRUE>
+                 | <FALSE> )
+    ) ?
+    <EOL>
+}
+*/
+
+void BooleanDeclaration(): {
+    Token name;
+    Token value;
+}
+{
+    <BOOLEAN> name=<IDENTIFIER> <ASSIGN> ( value=<TRUE> | value=<FALSE> )
+    {
+        String newVariableName = name.image;
+        // System.out.println(newVariableName + "=" + value.image);
+        if (token_source.variables.containsKey(newVariableName)) {
+            throw new ParseException(newVariableName + " already defined");
+        } else {
+            token_source.variables.put(newVariableName, value.image);
+        }
+    }
+    <EOL>
+}
+
+void IntegerDeclaration() throws ParseException : {
+    Token name;
+    Token value;
+}
+{
+    <INTEGER> name=<IDENTIFIER> <ASSIGN> value=<INTEGER_LITERAL>
+    {
+        String newVariableName = name.image;
+        // System.out.println(newVariableName + "=" + value.image);
+        if (token_source.variables.containsKey(newVariableName)) {
+            throw new ParseException(newVariableName + " already defined");
+        } else {
+            token_source.variables.put(newVariableName, value.image);
+        }
+    }
+    <EOL>
+}
+
+void StringDeclaration(): {
+    Token name;
+    Token value;
+}
+{
+    <STRING> name=<IDENTIFIER> <ASSIGN> value=<STRING_LITERAL>
+    {
+        String newVariableName = name.image;
+        // System.out.println(newVariableName + "=" + value.image);
+        if (token_source.variables.containsKey(newVariableName)) {
+            throw new ParseException(newVariableName + " already defined");
+        } else {
+            token_source.variables.put(newVariableName, value.image);
+        }
+    }
+    <EOL>
+}
+
+void FloatDeclaration(): {
+    Token name;
+    Token value;
+}
+{
+    <FLOAT> name=<IDENTIFIER> <ASSIGN> ( value=<INTEGER_LITERAL> | value=<FLOATING_LITERAL> )
+    {
+        String newVariableName = name.image;
+        // System.out.println(newVariableName + "=" + value.image);
+        if (token_source.variables.containsKey(newVariableName)) {
+            throw new ParseException(newVariableName + " already defined");
+        } else {
+            token_source.variables.put(newVariableName, value.image);
+        }
+    }
+    <EOL>
+}
+
+void Program():
+{}
+{
+    <PROGRAM> <EOL>
+    ( Statement() )*
+    <ENDPROGRAM>
+    ( <EOL> )?
+}
+
+void Statement():
+{}
+{
+    AssignmentStatement()
+  | IfStatement()
+  | WhileStatement()
+  | SwitchStatement()
+  | FileStatement()
+  | PrintStatement()
+}
+
+void AssignmentStatement() throws ParseException : {
+    Token name;
+    Token value;
+}
+{
+    // name=<IDENTIFIER> <ASSIGN> value=Expression() <EOL>
+    name=<IDENTIFIER> <ASSIGN> (value=<FLOATING_LITERAL> | value=<INTEGER_LITERAL> | value=<STRING_LITERAL>) <EOL>
+    {
+        if (token_source.variables.containsKey(name.image)) {
+            token_source.variables.put(name.image, value);
+        } else {
+            throw new ParseException(name + " is not define!");
+        }
+    }
+}
+
+void IfStatement():
+{}
+{
+    <IF> Expression() <THEN> <EOL>
+        ( Statement() )*
+    (
+      <ELSE> <EOL>
+        ( Statement() )*
+    )?
+    <ENDIF> <EOL>
+}
+
+void WhileStatement():
+{}
+{
+    <WHILE> Expression() <DO> <EOL>
+        ( Statement() )*
+    <ENDWHILE> <EOL>
+}
+
+void SwitchStatement():
+{}
+{
+    <SWITCH> <IDENTIFIER> <EOL>
+    (
+        <CASE> Expression() <COLON> ( <EOL> )?
+        ( Statement() )*
+        <ENDCASE> <EOL>
+    )+
+    (
+        <CASE_DEFAULT> <COLON> ( <EOL> )?
+        ( Statement() )*
+        <ENDCASE> <EOL>
+    )?
+    <ENDSWITCH> <EOL>
+}
+
+void FileStatement():
+{}
+{
+    <FILE> ( <OVERWRITE> | <APPEND> ) (<STRING_LITERAL> | <IDENTIFIER>) Expression() <EOL>
+}
+
+void Expression():
+{}
+{
+   OrExpression()
+}
+
+void OrExpression():
+{}
+{
+    AndExpression() ( <OR> AndExpression() )*
+}
+
+void AndExpression():
+{}
+{
+    NotExpression() ( <AND> NotExpression() )*
+}
+
+void NotExpression():
+{}
+{
+    ( <NOT> )? EqualityExpression()
+}
+
+void EqualityExpression():
+{}
+{
+    RelationalExpression() ( ( <EQ> | <NEQ> ) RelationalExpression() ) ?
+}
+
+void RelationalExpression():
+{}
+{
+    AdditiveExpression() ( ( <LT> | <GT> | <LE> | <GE> ) AdditiveExpression() )?
+}
+
+void AdditiveExpression():
+{}
+{
+    MultiplicativeExpression() ( ( <PLUS> | <MINUS> ) MultiplicativeExpression() )*
+}
+
+void MultiplicativeExpression():
+{}
+{
+   BasicExpression() ( ( <STAR> | <SLASH> ) BasicExpression() )*
+}
+
+void BasicExpression(): {} {
+    <IDENTIFIER>
+  | <INTEGER_LITERAL>
+  | <STRING_LITERAL>
+  | <TRUE>
+  | <FALSE>
+  | <LPAREN> Expression() <RPAREN>
+}
+
+void PrintStatement() throws ParseException : {
+    Token t;
+} {
+    <PRINT> (
+            ( <FLOATING_LITERAL> | <INTEGER_LITERAL> | <TRUE> | <FALSE> ) {
+                System.out.println(token.image);
+            } 
+        |   ( <STRING_LITERAL> {
+                System.out.println(token.image.substring(1, token.image.length()-1));
+        }
+        )
+        |   
+        t=<IDENTIFIER>
+        {
+            String variable = t.image;
+            /*
+            for (Object key: token_source.variables.keySet()) {
+                System.out.println("["+key+"]");
+            }
+            */
+            if (token_source.variables.containsKey(variable)) {
+                System.out.println(token_source.variables.get(t.image));
+            } else {
+                throw new ParseException(variable + " is not define!");
+            }
+        }
+        )
+    <EOL>
+}
