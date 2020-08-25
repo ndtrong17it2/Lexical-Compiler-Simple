@@ -3,13 +3,13 @@ PARSER_BEGIN(Calc2)
 		public static void main (String args []) {
 			Calc2 parser = new Calc2(System.in);
 			for (;;)
-				try {
-					if (parser.expr() == -1)
-						System.exit(0);
-				} catch (Exception e) {
-					e.printStackTrace();
-					System.exit(1);
-				}
+			try {
+				if (parser.expr() == -1)
+					System.exit(0);
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.exit(1);
+			}
 		}
 	}
 PARSER_END(Calc2)
@@ -44,7 +44,7 @@ int expr() throws Exception: // expr: sum \n
 	throw err;
 	}
 	}
-int sum() throws NumberFormatException:  // sum: product { +- product }
+int sum() throws NumberFormatException:
 { int s, r; }     // returns value
 { s = product()
 ( "+" r = product() { s += r; }
@@ -52,7 +52,7 @@ int sum() throws NumberFormatException:  // sum: product { +- product }
 )*   { return s; }
 }
 
-int product() throws NumberFormatException: // product: term { *%/ term }
+int product() throws NumberFormatException:
 { int p, r;}     // returns value
 { p = term()
 ( "*" r = term() { p *= r; }
