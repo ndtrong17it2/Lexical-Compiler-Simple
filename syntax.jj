@@ -44,8 +44,7 @@ TOKEN :
 
 TOKEN :
 {
-    < DECLARATION: "DECLARATION" >
-  | < PROGRAM: "PROGRAM" >
+    < PROGRAM: "PROGRAM" >
   | < ENDPROGRAM: "ENDPROGRAM" >
 
   | < BOOLEAN: "BOOLEAN" >
@@ -126,25 +125,16 @@ TOKEN :
 void CompilationUnit():
 {}
 {
-  Declaration()
+  ( Declaration() )?
   Program()
   ( <EOL> )?
   <EOF>
 }
-/*
-void Declaration():
-{}
-{
-    <DECLARATION> <EOL>
-    ( SimpleDeclaration() )*
-}
-*/
 
 void Declaration():
 {}
 {
-    <DECLARATION> <EOL>
-    ( BooleanDeclaration() | IntegerDeclaration() | StringDeclaration() | FloatDeclaration() )*
+    ( BooleanDeclaration() | IntegerDeclaration() | StringDeclaration() | FloatDeclaration() )+
 }
 
 
@@ -263,6 +253,7 @@ void Statement():
   | SwitchStatement()
   | FileStatement()
   | PrintStatement()
+  | Declaration()
 }
 
 void AssignmentStatement() throws ParseException : {

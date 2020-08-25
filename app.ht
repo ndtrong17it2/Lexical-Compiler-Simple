@@ -1,0 +1,7 @@
+INTEGER b := 10
+PROGRAM
+	INTEGER a := 5
+	PRINT "Hello World"
+	PRINT a
+	PRINT b
+ENDPROGRAM
