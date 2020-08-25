@@ -32,4 +32,4 @@ $ javac SimpleProgram.java
 $ java SimpleProgram program.ht
 ```
 The program.ht file contains our custom code.
-Edit program.ht by following [Syntax.md](https://github.com/ndtrong17it2/Simple-JavaCC-Parser-Generator/content/SyntaxDocumentation.md)
+Edit program.ht by following [Syntax.md](https://github.com/ndtrong17it2/Simple-JavaCC-Parser-Generator/tree/master/content/SyntaxDocumentation.md)
