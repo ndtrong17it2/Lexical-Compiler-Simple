@@ -211,7 +211,7 @@ void StringDeclaration(): {
         if (token_source.variables.containsKey(newVariableName)) {
             throw new ParseException(newVariableName + " already defined");
         } else {
-            token_source.variables.put(newVariableName, value.image);
+            token_source.variables.put(newVariableName, value.image.substring(1, value.image.length()-1));
         }
     }
     <EOL>
@@ -318,50 +318,9 @@ void FileStatement():
 void Expression():
 {}
 {
-   OrExpression()
+   
 }
 
-void OrExpression():
-{}
-{
-    AndExpression() ( <OR> AndExpression() )*
-}
-
-void AndExpression():
-{}
-{
-    NotExpression() ( <AND> NotExpression() )*
-}
-
-void NotExpression():
-{}
-{
-    ( <NOT> )? EqualityExpression()
-}
-
-void EqualityExpression():
-{}
-{
-    RelationalExpression() ( ( <EQ> | <NEQ> ) RelationalExpression() ) ?
-}
-
-void RelationalExpression():
-{}
-{
-    AdditiveExpression() ( ( <LT> | <GT> | <LE> | <GE> ) AdditiveExpression() )?
-}
-
-void AdditiveExpression():
-{}
-{
-    MultiplicativeExpression() ( ( <PLUS> | <MINUS> ) MultiplicativeExpression() )*
-}
-
-void MultiplicativeExpression():
-{}
-{
-   BasicExpression() ( ( <STAR> | <SLASH> ) BasicExpression() )*
-}
 
 void BasicExpression(): {} {
     <IDENTIFIER>
